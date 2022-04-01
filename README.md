@@ -5,19 +5,21 @@ nwitter 성형주
 ## [03월 30일]
 > 1. Firebase 프로젝트 생성하기
 - [Firebase 접속](https://firebase.google.com)
+- 프로젝트 만들기(nwitter)
 > 2. Firebase SDK 설치
 ```js
 npm install firebase
 ```
 > 3. firebase.js 파일 생성하기(비밀키 노출주의)
+
 > 4. index.js 파일에 firebase 관련 import
 ```js
-[firebase 8버전 이하]
+[firebase 8 버전 이하]
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
 
-[firebase 9버전 이상]
+[firebase 9 버전 이상]
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
@@ -26,7 +28,7 @@ import 'firebase/compat/firestore';
 ```
 1. .env 파일 생성하기
 2. .gitignore 파일에 .env 등록하기
-3. firebase.js 파일 각각의 값을 변수로 변경 및 변수명 앞에 process.env. 추가하여 참조하도록 수정
+3. firebase.js 파일 각각의 값을 변수로 변경 및 변수명 앞에 환경변수 process.env. 를 추가하여 참조하도록 수정
 ```
 > 6. 프로젝트 루트에 components 및 routes 폴더 생성하기
 - App.js 파일을 components 폴더로 이동
@@ -45,7 +47,7 @@ npm install react-router-dom
 ```js
 import { HashRouter as Router, Route, Switch } from "react-router-dom";
 
-const AppRouter = () => {
+const AppRouter = () => { //Router를 미리 정의했으므로 AppRouter로 정의
     return (
         <Router>
             <Switch>
@@ -57,6 +59,9 @@ const AppRouter = () => {
 
 export default AppRouter 
 ```
+> 9. Hooks
+- 함수 컴포넌트에서 state를 관리하기 위해 사용
+- Hooks를 사용하기 위해 useState 함수 이용
 
 ## [03월 23일]
 > 프로젝트 생성 시 오류 해결 방법
