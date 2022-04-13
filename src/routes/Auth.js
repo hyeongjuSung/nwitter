@@ -5,8 +5,15 @@ const Auth = () => {
     const [password, setPassword] = useState("");
 
     const onChange = (event) => {
-        console.log(event.target.name);
-    }
+        const {
+            target: { name, value },
+        } = event;
+        if (name === "email") {
+            setEmail(value);
+        } else if (name === "password") {
+            setPassword(value);
+        }
+    };
 
     const onSubmit = (event) => {
         event.preventDefault();
@@ -14,7 +21,7 @@ const Auth = () => {
 
     return (
         <div>
-            <form onSubmit={{onSubmit}}>
+            <form onSubmit={onSubmit}>
                 <input name="email" type="email" placeholder="Email" required value={email} onChange={onChange} />
                 <input namr="password" type="password" placeholder="Password" required value={password} onChange={onChange}/>
                 <input type="submit" value="Log in" />
