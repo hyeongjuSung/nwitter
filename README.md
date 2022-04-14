@@ -2,6 +2,103 @@ nwitter 성형주
 =============
 2022-1 실무프로젝트 수업 내용 정리
 -------------
+## [04월 13일]
+> 1. App.js - useState 초기값 정의
+```js
+- 해당 코드 삭제
+console.log(authService.currentUser)
+
+- 해당 코드 수정
+const [ isLoggedIn, setIsLoggedIn ] = useState(authService.currentUser);
+```
+> 2. 파이어베이스 인증 설정하기
+- [Firebase 접속](https://console.firebase.google.com)
+- Authentication -> 시작하기 -> Sign-in method 탭
+- 이메일 사용 설정 체크
+- 구글 로그인 사용 설정 체크(기본값 설정)
+- 깃허브 사용 설정 체크(콜백 URL 복사) -> 깃허브 접속 후 Developer Settings 이동 -> OAuth apps 이동 -> Register a new application 클릭
+- Application name: Nwiiter
+- Homepage URL: Firebase에서 firbaseapp.com 으로 끝나는 승인된 도메인 복사(https:// 입력필수)
+- Authorization callback URL: 복사했던 콜백 URL 입력
+- Register application 클릭하여 설정 완료
+- 생성된 Client ID 및 Client secrets 값을 firebase의 클라이언트 ID 및 보안 비밀번호 영역에 각각 복사
+
+> 3. Auth.js - 로그인 폼 기본 구조 만들기
+```js
+- 해당 코드 삭제
+<span>Auth</span>
+
+- 해당 코드 추가
+{
+    return (
+        <div>
+            <form>
+                <input type="email" placeholder="Email" required />
+                <input type="password" placeholder="Password" required />
+                <input type="submit" value="Log in" />
+            </form>
+            <div>
+                <button>Continue with Google</button>
+                <button>Continue with Github</button>
+            </div>
+        </div>
+    )
+}
+```
+> 4. Auth.js - 로그인 폼이 state를 업데이트하도록 만들기
+```js
+import { useState } from "react"
+
+const Auth = () => {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
+    const onChange = (event) => {
+        const {
+            target: { name, value },
+        } = event;
+        if (name === "email") {
+            setEmail(value);
+        } else if (name === "password") {
+            setPassword(value);
+        }
+    };
+
+    const onSubmit = (event) => {
+        // onSubmit 함수에서 이벤트의 기본값을 막아줌
+        event.preventDefault();
+    }
+
+    return (
+        <div>
+            <form>
+                <input type="email" placeholder="Email" required />
+                <input type="password" placeholder="Password" required />
+            <form onSubmit={onSubmit}>
+                <input name="email" type="email" placeholder="Email" required value={email} onChange={onChange} />
+                <input namr="password" type="password" placeholder="Password" required value={password} onChange={onChange}/>
+                <input type="submit" value="Log in" />
+            </form>
+            <div>
+```
+> 5. Auth.js onSubmit 함수에서 로그인과 회원가입 분기시키기
+```js
+- 해당 코드 추가
+const [newAccount, setNewAccount] = useState(true);
+
+event.preventDefault();
+        if(newAccount) {
+            //create newAccount
+        } else {
+            // log in
+        }
+
+- 해당 코드 수정
+// 회원가입과 로그인 분기
+<input type="submit" value={newAccount ? "Create Account" : "Log in"} />
+
+```
+
 ## [04월 06일]
 > 1. Router.js 코드 추가 - useState 함수 사용하기
 ```js
