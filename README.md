@@ -2,6 +2,115 @@ nwitter 성형주
 =============
 2022-1 실무프로젝트 수업 내용 정리
 -------------
+## [04월 27일]
+> 1. Auth.js - 파이어베이스로 로그인과 회원가입 처리하기
+```js
+- 해당 코드 추가 후 Create Account로 회원가입이 정상적으로 동작하는지 확인 
+import { authService } from "fbase";
+
+const onSubmit = async (event) => {
+        event.preventDefault();
+        try {
+            let data;
+            if(newAccount) {
+                //create newAccount
+                data = await authService.createUserWithEmailAndPassword(email, password);
+            } else {
+                // log in
+                data = await authService.signInWithEmailAndPassword(email, password);
+            }
+            console.log(data);
+        } catch(error) {
+            console.log(error);
+        }
+    }
+```
+> 2. 로그인을 지속시켜주는 setPersistence
+```
+- 파이어베이스의 로그인 상태 지속 방법
+- 프로젝트에서는 웹 브라우저를 종료해도 로그인이 유지되는 local 옵션을 사용(기본값)
+```
+> 3. IndexedDB
+```
+- local 옵션으로 저장한 사용자 로그인 정보를 담고있는 DB
+- 개발자도구 > Application탭 > Storage > IndexedDB > firebaseLocalStorageDB > firebaseLocalStorage 에서 확인
+```
+> 4. App.js - setInterval 함수로 딜레이 확인하기
+```js
+- setInterval: 2번째 인자로 지정한 시간 간격마다 1번째 인자로 전달한 코드를 
+
+- 해당 코드 추가
+setInterval(() => console.log(authService.currentUser), 2000);
+```
+> 5. App.js - useEffect 함수 사용하기
+```js
+- useEffect 함수로 파이어베이스가 초기화되는 시점을 잡아낸 후, 로그인 완료 후 보여줄 화면을 렌더링
+
+- 해당 코드 수정
+import { useEffect, useState } from "react";
+
+useEffect(() => {
+    authService.onAuthStateChanged((user) => console.log(user));
+  }, []);
+
+- 해당 코드 수정(화면 렌더링)
+  const [ init, setInit ] = useState(false);
+  const [ isLoggedIn, setIsLoggedIn ] = useState(false);
+
+  useEffect(() => {
+    authService.onAuthStateChanged((user) => console.log(user));
+    authService.onAuthStateChanged((user) => {
+      if(user) {
+        setIsLoggedIn(user);
+      } else {
+        setIsLoggedIn(false);
+      }
+      setInit(true);
+    });
+  }, []);
+
+  return (
+    <>
+      <AppRouter iaLoggedIn={isLoggedIn} />
+      {init ? <AppRouter iaLoggedIn={isLoggedIn} /> : "initializing..."}
+      <footer>&copy; {new Date().getFullYear()} Nwitter</footer>
+    </>
+  );  
+```
+> 6. Auth.js - 에러와 에러 메시지를 파이어베이스로 처리하기
+```js
+- 해당 코드 수정
+const [error, setError] = useState("");
+
+catch(error) {
+  setError(error.message);
+}
+```
+> 7. Auth.js - 로그인/회원가입 토글 버튼 적용하기
+```js
+- 해당 코드 추가
+const toggleAccount = () => setNewAccount((prev) => !prev);
+
+ <span onClick={toggleAccount}>
+    {newAccount ? "Sign In" : "Create Account"}
+</span>
+```
+> 8. Auth.js - 소셜 로그인 버튼에서 name 속성 사용하기
+```js
+- 해당 코드 추가하여 소셜 로그인을 구별
+const onSocialClick = (event) => {
+  console.log(event.target.name);
+};
+```
+> 9. fbase.js - firebaseInstance 추가하기
+```js
+- 해당 코드 추가
+export const firebaseInstance = firebase;
+```
+
+<button onClick={onSocialClick} name="google">Continue with Google</button>
+<button onClick={onSocialClick} name="github">Continue with Github</button>
+```
 ## [04월 13일]
 > 1. App.js - useState 초기값 정의
 ```js
