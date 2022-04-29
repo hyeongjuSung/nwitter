@@ -34,10 +34,11 @@ const onSubmit = async (event) => {
 ```
 - local 옵션으로 저장한 사용자 로그인 정보를 담고있는 DB
 - 개발자도구 > Application탭 > Storage > IndexedDB > firebaseLocalStorageDB > firebaseLocalStorage 에서 확인
+- IndexedDB 를 clear 하면 수동으로 로그아웃 가능
 ```
 > 4. App.js - setInterval 함수로 딜레이 확인하기
 ```js
-- setInterval: 2번째 인자로 지정한 시간 간격마다 1번째 인자로 전달한 코드를 
+- setInterval: 2번째 인자로 지정한 시간 간격마다 1번째 인자로 전달한 코드를 실행
 
 - 해당 코드 추가
 setInterval(() => console.log(authService.currentUser), 2000);
@@ -101,15 +102,14 @@ const toggleAccount = () => setNewAccount((prev) => !prev);
 const onSocialClick = (event) => {
   console.log(event.target.name);
 };
+
+<button onClick={onSocialClick} name="google">Continue with Google</button>
+<button onClick={onSocialClick} name="github">Continue with Github</button>
 ```
 > 9. fbase.js - firebaseInstance 추가하기
 ```js
 - 해당 코드 추가
 export const firebaseInstance = firebase;
-```
-
-<button onClick={onSocialClick} name="google">Continue with Google</button>
-<button onClick={onSocialClick} name="github">Continue with Github</button>
 ```
 ## [04월 13일]
 > 1. App.js - useState 초기값 정의
