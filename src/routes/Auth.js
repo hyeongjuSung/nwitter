@@ -1,4 +1,4 @@
-import { authService } from "fbase";
+import { authService, firebaseInstance } from "fbase";
 import { useState } from "react"
 
 const Auth = () => {
@@ -38,7 +38,15 @@ const Auth = () => {
     const toggleAccount = () => setNewAccount((prev) => !prev);
 
     const onSocialClick = (event) => {
-        console.log(event.target.name);
+        const {
+            target: {name},
+        } = event;
+        let provider;
+        if(name === "google") {
+            provider = new firebaseInstance.auth.GoogleAuthProvider();
+        } else if (name === "github") {
+            provider = new firebaseInstance.auth.GithubAuthProvider();
+        }
     };
 
     return (
