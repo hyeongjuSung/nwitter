@@ -2,6 +2,167 @@ nwitter 성형주
 =============
 2022-1 실무프로젝트 수업 내용 정리
 -------------
+## [05월 04일]
+> 1. Auth.js - provider 적용허기
+```js
+- 해당 코드 수정
+import { authService, firebaseInstance } from "fbase";
+
+const onSocialClick = (event) => {
+        const {
+            target: {name},
+        } = event;
+        let provider;
+        if(name === "google") {
+            provider = new firebaseInstance.auth.GoogleAuthProvider();
+        } else if (name === "github") {
+            provider = new firebaseInstance.auth.GithubAuthProvider();
+    };
+```
+> 2. Auth.js - 소셜로그인 완성하기
+```js
+-ㅙ당 코드 수정
+const onSocialClick = async (event) => {
+        const {
+            target: {name},
+        } = event;
+        let provider;
+        if(name === "google") {
+            provider = new firebaseInstance.auth.GoogleAuthProvider();
+        } else if (name === "github") {
+            provider = new firebaseInstance.auth.GithubAuthProvider();
+        }
+        const data = await authService.signInWithPopup(provider);
+        console.log(data);
+    };
+```
+> 3. 네비게이션 컴포넌트 만들기
+```js
+- components 폴더에 Navigation.js 파일 생성
+- 해당 코드 추가
+
+const Navigation = () => {
+    return <nav>This is Navigation</nav>
+};
+
+export default Navigation;
+```
+> 4. Router.js - 네비게이션 컴포넌트 라우터에 추가하기
+```js
+- 해당 코드 추가
+
+import Navigation from "./Navigation";
+
+{isLoggedIn && <Navigation />}
+```
+> 5. Navigation.js - 링크 추가하기
+```js
+- 해당 코드 추가
+import { Link } from "react-router-dom";
+
+const Navigation = () => {
+    return (
+        <nav>
+            <ul>
+                <li>
+                    <Link to="/">Home</Link>
+                </li>
+                <li>
+                    <Link to="/profile">My Profile</Link>
+                </li>
+            </ul>
+        </nav>
+    );
+};
+```
+> 6. Router.js - 링크 추가하기
+```js
+-해당 코드 추가
+import Profile from "routes/Profile";
+
+<Route exact path="/profile">
+   <Profile />
+</Route>
+```
+> 7. Profile.js - 로그아웃 버튼 만들기
+```js
+- 해당 코드 추가
+import { authService } from "fbase"
+
+const onLogOutClick = () => authService.signOut();
+
+    return (
+        <>
+            <button onClick={onLogOutClick}>Log out</button>
+        </>
+    );
+```
+> 8. Router.js - 로그아웃 후 주소 이동하기
+```js
+-해당 코드 추가
+import { HashRouter as Router, Redirect, Route, Switch } from "react-router-dom";
+
+<Redirect from="*" to="/" />
+```
+> 8. Router.js - useHistory로 로그아웃
+```js
+-해당 코드 삭제
+import {  Redirect } from "react-router-dom";
+
+<Redirect from="*" to="/" />
+```
+> 9. Profile.js - useHistory로 로그아웃 후 주소 이동하기
+```js
+-해당 큐드 추가
+import { useHistory } from "react-router-dom";
+
+const history = useHistory();
+
+    const onLogOutClick = () => {
+        authService.signOut();
+        history.push("/");
+    };
+```
+> 10. Home.js - 트윗을 위한 폼 만들기
+```js
+- 해당 코드 추가
+import { useState } from "react"
+
+const Home = () => {
+    const [nweet, setNweet] = useState("");
+
+    const onSubmit = (event) => {
+        event.preventDefault();
+    };
+
+    const onChange = (event) => {
+        event.preventDefault();
+        const {
+            target: {value},
+        } = event;
+        setNweet(value);
+    };
+
+    return (
+        <form onSubmit={onSubmit}>
+            <input
+                value={nweet}
+                onChange={onChange}
+                type="text"
+                placeholder="What's on your mind?"
+                maxLength={120}
+            />
+            <input type="submit" value="Nweet" />    
+        </form>
+    );
+};
+```
+> 11. 트윗을 위한 파이어베이스 데이터베이스 생성하기
+- [Firebase 접속](https://console.firebase.google.com)
+- Firebase Database 탭
+- 데이터베이스 만들기
+- 테스트 모드에서 시작
+- 위치 설정
 ## [04월 27일]
 > 1. Auth.js - 파이어베이스로 로그인과 회원가입 처리하기
 ```js
