@@ -2,6 +2,77 @@ nwitter 성형주
 =============
 2022-1 실무프로젝트 수업 내용 정리
 -------------
+## [05월 11일]
+> 1. 샘플 데이터 저장해보기
+- Cloud Firestore 탭
+- 컬렉션 시작
+- 컬렉션 ID: nwitter
+- 자동 ID, 필드, 유형, 값 입력 후 저장
+> 2. fbase.js - 리액트에서 파이어베이스 데이터배아스 사용하기
+```js
+- 해당 코드 추가
+import "firebase/firestore";
+
+export const dbService = firebase.firestore();
+```
+> * 오류 해결
+```js 
+- 위 코드 추가 후 페이지 동작안되는 현상
+-해결방법: import문 수정
+import "firebase/compat/firestore";
+```
+> 3. Home.js - 파이어스토어에 데이터 저장하기: Create
+```js
+- 해당 코드 추가
+import { dbService } from "fbase";
+
+const onSubmit = async (event) => {
+        event.preventDefault();
+        await dbService.collection("nweets").add({
+            text: nweet,
+            createdAt: Date.now(),
+        });
+        setNweet("");
+    };
+```
+> 4.  Home.js - 파이어스토어에서 문서 읽어오기: Read
+```js
+- 해당 코드 추가
+import { useEffect, useState } from "react"
+
+const getNweets = async () => {
+        const dbNweets = await dbService.collection("nweets").get();
+        console.log(dbNweets);
+    };
+
+    useEffect(() => {
+        getNweets();
+    }, []);
+```
+> 5.  Home.js - 스냅샷 확인하기
+```js
+- 해당 코드 삭제
+console.log(dbNweets);
+- 해당 코드 수정
+dbNweets.forEach((document) => console.log(document.data()));
+```
+> 6. Home.js - 받은 데이터로 게시물 목록 만들기
+```js
+- 해당 코드 수정
+const [nweets, setNweets] = useState([]);
+
+ dbNweets.forEach((document) => 
+            setNweets((prev) => [document.data(), ...prev])
+        );
+```
+> 7. Home.js - 트윗 아이디 저장하기
+```js
+- 해당 코드 수정
+ dbNweets.forEach((document) => {
+            const nweetObject = { ...document.data(), id: document.id };
+            setNweets((prev) => [nweetObject, ...prev])
+        });
+```
 ## [05월 04일]
 > 1. Auth.js - provider 적용허기
 ```js
