@@ -18,7 +18,8 @@ export const dbService = firebase.firestore();
 > * 오류 해결
 ```js 
 - 위 코드 추가 후 페이지 동작안되는 현상
--해결방법: import문 수정
+
+- 해결방법: import문 수정
 import "firebase/compat/firestore";
 ```
 > 3. Home.js - 파이어스토어에 데이터 저장하기: Create
@@ -92,7 +93,7 @@ const onSocialClick = (event) => {
 ```
 > 2. Auth.js - 소셜로그인 완성하기
 ```js
--ㅙ당 코드 수정
+- 해당 코드 수정
 const onSocialClick = async (event) => {
         const {
             target: {name},
@@ -111,7 +112,6 @@ const onSocialClick = async (event) => {
 ```js
 - components 폴더에 Navigation.js 파일 생성
 - 해당 코드 추가
-
 const Navigation = () => {
     return <nav>This is Navigation</nav>
 };
@@ -121,7 +121,6 @@ export default Navigation;
 > 4. Router.js - 네비게이션 컴포넌트 라우터에 추가하기
 ```js
 - 해당 코드 추가
-
 import Navigation from "./Navigation";
 
 {isLoggedIn && <Navigation />}
@@ -170,21 +169,21 @@ const onLogOutClick = () => authService.signOut();
 ```
 > 8. Router.js - 로그아웃 후 주소 이동하기
 ```js
--해당 코드 추가
+- 해당 코드 추가
 import { HashRouter as Router, Redirect, Route, Switch } from "react-router-dom";
 
 <Redirect from="*" to="/" />
 ```
 > 8. Router.js - useHistory로 로그아웃
 ```js
--해당 코드 삭제
+- 해당 코드 삭제
 import {  Redirect } from "react-router-dom";
 
 <Redirect from="*" to="/" />
 ```
 > 9. Profile.js - useHistory로 로그아웃 후 주소 이동하기
 ```js
--해당 큐드 추가
+- 해당 코드 추가
 import { useHistory } from "react-router-dom";
 
 const history = useHistory();
