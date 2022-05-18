@@ -6,7 +6,13 @@ const Home = ({ userObj }) => {
     const [nweets, setNweets] = useState([]);
 
     useEffect(() => {
-        
+        dbService.collection("nweets").onSnapshot((snapshot) => {
+            const newArray = snapshot.docs.map((document) => ({
+                id: document.id,
+                ...document.data(),
+            }));
+            setNweets(newArray);
+        });    
     }, []);
 
     const onSubmit = async (event) => {
