@@ -18,7 +18,6 @@ const Home = () => {
         getNweets();
     }, []);
 
-    console.log(nweets);
 
     const onSubmit = async (event) => {
         event.preventDefault();
@@ -38,6 +37,7 @@ const Home = () => {
     };
 
     return (
+        <>
         <form onSubmit={onSubmit}>
             <input
                 value={nweet}
@@ -48,6 +48,14 @@ const Home = () => {
             />
             <input type="submit" value="Nweet" />    
         </form>
+        <div>
+            {nweets.map((nweet) => (
+                <div key={nweet.id}>
+                    <h4>{nweet.text}</h4>
+                </div>    
+            ))}
+        </div>
+        </>
     );
 };
 
