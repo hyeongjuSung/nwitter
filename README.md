@@ -2,6 +2,108 @@ nwitter 성형주
 =============
 2022-1 실무프로젝트 수업 내용 정리
 -------------
+## [05월 18일]
+> 1. Home.js- 트윗 목록 출력해보기
+```js
+- 해당 코드 추가
+- 배열을 순회하는 map 함수
+        <>
+        <div>
+            {nweets.map((nweet) => (
+                <div key={nweet.id}>
+                    <h4>{nweet.text}</h4>
+                </div>    
+            ))}
+        </div>
+        </>
+```
+> 2. 작성자 표시하기
+- [관련 코드](https://github.com/hyeongjuSung/nwitter/commit/72e7125d5e646ce05bb8a87f4c919b070f32f3f1)
+> 3. getNweets 함수 삭제하기
+```js
+- 해당 코드 삭제
+const getNweets = async () => {
+        const dbNweets = await dbService.collection("nweets").get();
+
+        dbNweets.forEach((document) => {
+            const nweetObject = { ...document.data(), id: document.id };
+            setNweets((prev) => [nweetObject, ...prev])
+        });
+};
+
+getNweets();
+```
+> 4. Home.js - onSnapShot 함수 적용하기
+```js
+- 해당 코드 추가
+useEffect(() => {
+        dbService.collection("nweets").onSnapshot((snapshot) => {
+            const newArray = snapshot.docs.map((document) => ({
+                id: document.id,
+                ...document.data(),
+            }));
+            setNweets(newArray);
+        });    
+    }, []);
+```
+> 5. 트윗 컴포넌트 분리하기
+```js
+- /components/Nweet.js 생성
+- 해당 코드 추가
+const Nweet = ({ nweetObj }) => {
+    return (
+        <div>
+            <h4>{nweetObj.text}</h4>
+        </div>
+    );
+};
+
+export default Nweet;
+
+- Home.js 수정
+- 해당 코드 추가
+import Nweet from "components/Nweet";
+-해당 코드 수정
+{nweets.map((nweet) => (
+    <Nweet key={nweet.id} nweetObj={nweet}/>    
+))}
+```
+> 6. Nweet.js - 수정, 삭제 버튼 추가하기
+```js
+<button>Delete Nweet</button>
+<button>Edit Nweet</button>
+```
+> 7. 본인이 쓴 트윗만 관리하기
+```js
+- Home.js 수정
+- 헤당 코드 추가
+isOwner={nweet.creatorId === userObj.uid}
+
+- Nweet.js 수정
+- 헤당 코드 수정
+{isOwner && (
+    <>
+        <button>Delete Nweet</button>
+        <button>Edit Nweet</button>
+    </>
+)}
+```
+> 8. Nweet.js - 버튼에 삭제 기능 추가하기
+```js
+- 해당 코드 추가
+const oneDeleteClick = () => {
+    const ok = window.confirm("삭제하시겠습니까?");
+    console.log(ok);
+}
+<button onClick={oneDeleteClick}>Delete Nweet</button>
+
+import { dbService } from "fbase";
+if (ok) {
+            console.log(nweetObj.id);
+            const data = await dbService.doc(`nweets/${nweetObj.id}`).delete();
+            console.log(data);
+        }  
+```
 ## [05월 11일]
 > 1. 샘플 데이터 저장해보기
 - Cloud Firestore 탭
@@ -174,14 +276,14 @@ import { HashRouter as Router, Redirect, Route, Switch } from "react-router-dom"
 
 <Redirect from="*" to="/" />
 ```
-> 8. Router.js - useHistory로 로그아웃
+> 9. Router.js - useHistory로 로그아웃
 ```js
 - 해당 코드 삭제
 import {  Redirect } from "react-router-dom";
 
 <Redirect from="*" to="/" />
 ```
-> 9. Profile.js - useHistory로 로그아웃 후 주소 이동하기
+> 10. Profile.js - useHistory로 로그아웃 후 주소 이동하기
 ```js
 - 해당 코드 추가
 import { useHistory } from "react-router-dom";
@@ -193,7 +295,7 @@ const history = useHistory();
         history.push("/");
     };
 ```
-> 10. Home.js - 트윗을 위한 폼 만들기
+> 11. Home.js - 트윗을 위한 폼 만들기
 ```js
 - 해당 코드 추가
 import { useState } from "react"
@@ -227,7 +329,7 @@ const Home = () => {
     );
 };
 ```
-> 11. 트윗을 위한 파이어베이스 데이터베이스 생성하기
+> 12. 트윗을 위한 파이어베이스 데이터베이스 생성하기
 - [Firebase 접속](https://console.firebase.google.com)
 - Firebase Database 탭
 - 데이터베이스 만들기
