@@ -2,8 +2,111 @@ nwitter 성형주
 =============
 2022-1 실무프로젝트 수업 내용 정리
 -------------
+## [05월 25일]
+> 1. Nweet.js - 수정 기능을 위한 useState 추가하기
+```js
+- 해당 코드 추가
+import { useState } from "react";
+
+const [editing, setEditing] = useState(false);
+const [newNweet, setNewNweet] = useState(nweetObj.text);
+
+const toggleEditing = () => setEditing((prev) => !prev);
+
+<button onClick={toggleEditing}>Edit Nweet</button> 
+
+{editing ? (
+    <>             
+        <form>
+            <input value={newNweet} required />
+        </form>
+        <button onClick={toggleEditing}>Cancel</button>
+                </>
+         ) : (
+
+         )}
+```
+> 2. Nweet.js - 입력란에 onChange 작업하기
+```js
+- 해당 코드 추가
+const onChange = (event) => {
+        const {
+            target: { value },
+        } = event;
+        setNewNweet(value);
+    };
+<input onChange={onChange} value={newNweet} required />
+```
+> 3. Nweet.js - 파이어스토어에 새 입력값 반영하기
+```js
+-해당 코드 추가
+const onSubmit = async (event) => {
+        event.preventDefault();
+        await dbService.doc(`nweets/${nweetObj.id}`).update({ text: newNweet });
+        setEditing(false);
+    };
+
+<form onSubmit={onSubmit}>
+    <input onChange={onChange} value={newNweet} required />
+    <input type="submit" value="Update Nweet" />
+</form>
+```
+> 4. Home.js - 파일 첨부 양식 만들기
+```js
+- 해당 코드 추가
+<input type="file" accept="image/*" />
+```
+> 5. App.js - 화면 깔끔하게 정리하기
+```js
+- 해당 코드 삭제
+<footer>&copy; {new Date().getFullYear()} Nwitter</footer>
+```
+> 6. Home.js - 첨부 파일 정보 출력해보기
+```js
+- 해당 코드 추가
+const onFileChange = (event) => {
+        const {
+            target: { files },
+        } = event;
+        const theFile = files[0];
+};
+
+<input type="file" accept="image/*" onChange={onFileChange}/>
+```
+> 7. Home.js - 웹 브라우저에 사진 출력해보기
+```js
+- 해당 코드 추가
+const reader = new FileReader();
+reader.onloadend = (finishedEvent) => {
+    console.log(finishedEvent);
+};
+```
+> 8. Home.js - 사진 미리보기 구현해보기
+```js
+- 해당 코드 추가
+const [attachment, setAttachment] = useState("");
+
+const {
+    currentTarget: { result },
+} = finishedEvent;
+setAttachment(result);
+
+{attachment && <img src={attachment} width="50px" height="50px" />}
+```
+> 9. Home.js - 파일 선택 취소 버튼 만들기
+```js
+- 해당 코드 추가
+const onClearAttachment = () => setAttachment("");
+
+{attachment && (
+    <diV>
+        <img src={attachment} width="50px" height="50px" />
+        <button onClick={onClearAttachment}>Clear</button>
+    </diV>
+)}
+```
 ## [05월 18일]
-> 1. Home.js- 트윗 목록 출력해보기
+> 1. Home.js - 트윗 목록 출력해보기
 ```js
 - 해당 코드 추가
 - 배열을 순회하는 map 함수
