@@ -241,7 +241,7 @@ const onSubmit = async (event) => {
         setNweet("");
     };
 ```
-> 4.  Home.js - 파이어스토어에서 문서 읽어오기: Read
+> 4. Home.js - 파이어스토어에서 문서 읽어오기: Read
 ```js
 - 해당 코드 추가
 import { useEffect, useState } from "react"
@@ -255,7 +255,7 @@ const getNweets = async () => {
         getNweets();
     }, []);
 ```
-> 5.  Home.js - 스냅샷 확인하기
+> 5. Home.js - 스냅샷 확인하기
 ```js
 - 해당 코드 삭제
 console.log(dbNweets);
