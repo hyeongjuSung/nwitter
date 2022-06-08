@@ -2,6 +2,150 @@ nwitter 성형주
 =============
 2022-1 실무프로젝트 수업 내용 정리
 -------------
+## [06월 08일]
+> 1. fbase.js - 파이어베이스 스토리지 임포트하기
+```js
+- 해당 코드 추가
+import "firebase/compat/storage";
+
+export const storageService = firebase.storage();
+```
+> 2. Home.js - 스토리지 간단하게 사용해 보기
+```js
+- 해당 코드 주석처리
+// await dbService.collection("nweets").add({
+        //     text: nweet,
+        //     createdAt: Date.now(),
+        //     creatorId: userObj.uid,
+        // });
+        // setNweet("");
+```
+> 3. Home.js - 고유 식별자를 만들어주는 UUID 라이브러리 설치하기
+```js
+npm install uuid
+```
+> 4. Home.js - UUID 임포트하기
+```js
+- 해당 코드 추가
+import { v4 as uuidv4 } from 'uuid';
+```
+> 5. Home.js - 스토리지 레퍼런스 사용해보기
+```js
+-해당 코드 추가
+import { dbService, storageService } from "fbase";
+
+storageService.ref().child(`$(userObj.uid)/${uuidv4()}`);
+```
+> 6. Home.js - 스토리지에 사진 저장해보기
+```js
+-해당 코드 추가
+const attachmentRef = storageService.ref().child(`$(userObj.uid)/${uuidv4()}`);
+const response = await attachmentRef.putString(attachment, "data_url");
+cosole.log(response);
+```
+> 7. Home.js - 스토리지에서 사진 불러오기
+```js
+- 해당 코드 추가
+console.log(await response.ref.getDownloadURL());
+```
+> 8. 사진을 포함한 트윗 결과 화면에 출력허기
+```js
+- Home.js
+- 해당 코드 추가
+const attachmentUrl = await response.ref.getDownloadURL();
+
+const onSubmit = async (event) => {
+        event.preventDefault();
+        const attachmentRef = storageService.ref().child(`$(userObj.uid)/${uuidv4()}`);
+        const response = await attachmentRef.putString(attachment, "data_url");
+        const attachmentUrl = await response.ref.getDownloadURL();
+        await dbService.collection("nweets").add({
+            text: nweet,
+            createdAt: Date.now(),
+            creatorId: userObj.uid,
+            attachmentUrl,
+        });
+        setNweet("");
+        setAttachment("");
+    };
+
+- Nweet.js
+- 해당 코드 추가
+{nweetObj.attachmentUrl && (
+    <img src={nweetObj.attachmentUrl} width="50px" height="50px" />
+)}
+```
+> 9. Home.js - 코드 다듬기
+```js
+- 해당 코드 수정
+let attachmentUrl = ""
+        if (attachment !== "") {
+            const attachmentRef = storageService.ref().child(`$(userObj.uid)/${uuidv4()}`);
+            const response = await attachmentRef.putString(attachment, "data_url");
+            attachmentUrl = await response.ref.getDownloadURL();
+        }
+```
+> 10. Nweet.js - 트윗 삭제 시 사진을 스토리지에서 삭제하기
+```js
+- 해당 코드 수정
+import { dbService, storageService } from "fbase";
+
+const oneDeleteClick = async () => {
+        const ok = window.confirm("삭제하시겠습니까?");
+        if (ok) {
+            await dbService.doc(`nweets/${nweetObj.id}`).delete();
+            if (nweetObj.attachmentUrl !== "")
+                await storageService.refFromURL(nweetObj.attachmentUrl).delete();
+        }
+    }
+```
+> 11. 파일 정리하기
+```js
+1. EditProfile.js 파일 삭제
+
+2. Router.js
+- 해당 코드 수정
+<Profile userObj={userObj} />
+
+3. Profile.js
+- 해당 코드 수정
+const Profile = ( userObj ) =>
+```
+> 12. Profile.js - 트윗 필터링 기능 구현하기
+```js
+- 해당 코드 추가
+import { authService, dbService } from "fbase"
+import { useEffect } from "react";
+
+const getMyNweets = async () => {
+        const nweets = await dbService.collection("nweets").where("creatorId", "==", userObj.uid);
+    }
+
+    useEffect(() => {}, []);
+
+```
+> 13. Profile.js - 정렬 쿼리 사용해보기
+```js
+- 해당 코드 수정
+const nweets = await dbService.collection("nweets").where("creatorId", "==", userObj.uid).orderBy("createdAt", "asc");
+```
+> 14. Profile.js - 필터링한 트윗 목록 콘솔에 출력해보기
+```js
+- 해당 코드 수정
+const nweets = await dbService.collection("nweets").where("creatorId", "==", userObj.uid).orderBy("createdAt", "asc").get();
+
+console.log(nweets.docs.map((doc) => doc.data()));
+
+useEffect(() => {
+        getMyNweets();
+    }, []);
+```
+> 15. 복합 색인 만들기
+```
+1. 컬렉션 ID: nwitter
+2. 색인 필드: (creatorId 오름차순), (createdAt, 오름차순)
+3. 쿼리 범위: 컬렉션
+```
 ## [05월 25일]
 > 1. Nweet.js - 수정 기능을 위한 useState 추가하기
 ```js
