@@ -1,6 +1,7 @@
 import { dbService } from "fbase";
 import { useEffect, useState } from "react"
 import Nweet from "components/Nweet";
+import { v4 as uuidv4 } from 'uuid';
 
 const Home = ({ userObj }) => {
     const [nweet, setNweet] = useState("");
@@ -66,7 +67,7 @@ const Home = ({ userObj }) => {
             <input type="submit" value="Nweet" />    
             {attachment && (
                 <diV>
-                    <img src={attachment} width="50px" height="50px" />
+                    <img src={attachment} width="50px" height="50px" alt="attach"/>
                     <button onClick={onClearAttachment}>Clear</button>
                 </diV>
             )}
