@@ -5,7 +5,7 @@ const Nweet = ({ nweetObj, isOwner }) => {
     const [editing, setEditing] = useState(false);
     const [newNweet, setNewNweet] = useState(nweetObj.text);
 
-    const oneDeleteClick = async () => {
+    const onDeleteClick = async () => {
         const ok = window.confirm("삭제하시겠습니까?");
         if (ok) {
             await dbService.doc(`nweets/${nweetObj.id}`).delete();
@@ -47,7 +47,7 @@ const Nweet = ({ nweetObj, isOwner }) => {
                 )}
                 {isOwner && (
                     <>
-                        <button onClick={oneDeleteClick}>Delete Nweet</button>
+                        <button onClick={onDeleteClick}>Delete Nweet</button>
                         <button onClick={toggleEditing}>Edit Nweet</button>
                     </>
                 )}
