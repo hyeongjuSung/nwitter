@@ -2,6 +2,115 @@ nwitter 성형주
 =============
 2022-1 실무프로젝트 수업 내용 정리
 -------------
+## [06월 14일]
+> 1. Profile.js - Profile 컴포넌트 삭제하기
+```js
+- 해당 코드 삭제
+const getMyNweets = async () => {
+        const nweets = await dbService.collection("nweets").where("creatorId", "==", userObj.uid).orderBy("createdAt", "asc").get();
+
+        console.log(nweets.docs.map((doc) => doc.data()));
+    }
+
+    useEffect(() => {
+        getMyNweets();
+    }, []);
+```
+> 2. 내비게이션에 이름 널기
+```js
+- Router.js
+- 해당 코드 추가
+{isLoggedIn && <Navigation userObj={userObj} />}
+
+- Navigation.js
+- 해당 코드 추가
+const Navigation = ({ userObj }) => 
+...
+Link to="/profile">{userObj.displayName}의 Profile</Link>
+
+```
+> 3. Profile.js - 프로필 업데이트 기능 추가하기
+```js
+- 해당 코드 추가
+const Profile = ({ userObj }) => 
+
+const [newDisplayName, setNewDisplayName] = useState(userObj.newDisplayName);
+
+const onChange = (event) => {
+        const {
+            target: {value},
+        } = event;
+        setNewDisplayName(value);
+    };
+
+const onSubmit = (event) => {
+    event.preventDefault();    
+}
+
+<form onSubmit={onSubmit}>
+    <input onChange={onChange} type="text" placeholder="Display name" value={newDisplayName}/>
+    <input type="submit" placeholder="Update Profile"/>
+</form>
+```
+> 4. Profile.js - 프로필 업데이트하기
+```js
+const onSubmit = async (event) => {
+    event.preventDefault();
+    if(userObj.displayName !== newDisplayName) {
+        await userObj.updateProfile({ displayName: newDisplayName});
+    }
+}
+```
+> 5. App.js - refreshUser 함수 추가하기
+```js
+- 해당 코드 추가
+const refreshUser = () => {
+    setUserObj(authService.currentUser);
+};
+```
+> 6. refreshUser 함수 Profile 컴포넌트로 보내주기
+```js
+- 파일명, 컴포넌트명, export명이 동일해야 하지만 컴포넌트명이 AppRouter로 되어있으니 주의 
+
+- App.js
+- 해당 코드 추가
+<AppRouter refreshUser={refreshUser} isLoggedIn={isLoggedIn} userObj={userObj} />
+
+- Router.js
+- 해당 코드 수정
+const AppRouter = ({ isLoggedIn, userObj, refreshUser })
+<Profile refreshUser={refreshUser} userObj={userObj} />
+
+- Profile.js
+- 해당 코드 추가
+const Profile = ({ userObj, refreshUser })
+refreshUser();
+```
+> 7. App.js - userObj 크기 줄이기
+```js
+setUserObj({
+    uid: user.uid,
+    displayName: user.displayName,
+    updateProfile: (args) => user.updateProfile(args);
+});
+```
+> 8. App.js - isLoggedIn 크기 줄이기
+```js
+- 해당 코드 삭제
+setisLoggedIn(user);
+
+- 해당 코드 수정
+<AppRouter refreshUser={refreshUser} isLoggedIn={Boolean(userObj)} userObj={userObj} />
+
+const refreshUser = () => {
+    const user = authService.currentUser;
+    setUserObj({
+      uid: user.uid,
+      displayName: user.displayName,
+      updateProfile: (args) => user.updateProfile(args),
+    });
+  };
+```
 ## [06월 08일]
 > 1. fbase.js - 파이어베이스 스토리지 임포트하기
 ```js
