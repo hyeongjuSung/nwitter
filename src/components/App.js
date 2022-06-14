@@ -14,7 +14,7 @@ function App() {
         setUserObj({
           uid: user.uid,
           displayName: user.displayName,
-          updateProfile: (args) => user.updateProfile(args);
+          updateProfile: (args) => user.updateProfile(args),
         });
       } else {
         setIsLoggedIn(false);
