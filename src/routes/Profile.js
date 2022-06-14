@@ -18,8 +18,11 @@ const Profile = ({ userObj }) => {
         setNewDisplayName(value);
     };
 
-    const onSubmit = (event) => {
+    const onSubmit = async (event) => {
         event.preventDefault();
+        if(userObj.displayName !== newDisplayName) {
+            await userObj.updateProfile({ displayName: newDisplayName});
+        }
     }
 
     return (
